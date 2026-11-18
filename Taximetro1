@@ -1,0 +1,81 @@
+#Prototipo MEJORADO de taxímetro OBV
+
+#para el taxista: se cobra la tarifa de taxi lento desde el inicio de la carrera con INTRO
+#para el cliente: incluye un ticket detallado de la carrera
+
+#US-01
+
+import time #novedad teórica!
+
+while True: #bucle exterior para que no se apague al finalizar la primera carrera
+
+    print("========================")
+    print("BIENVENID@ AL TAXÍMETRO")
+    print("========================")
+    inicio = input("Para comenzar, pulse INTRO.")
+
+    while inicio != "":
+        print ("Debe pulsar INTRO para empezar la carrera.")
+        inicio = input("Pulse INTRO: ")
+    print ("¡TAXÍMETRO INICIADO!\nLa carrera ha comenzado.")
+
+    tarifa = 0
+    estado = "p" #se cobra tarifa de taxi parado desde el inicio de la carrera
+    tiempo_lento = 0
+    tarifa_lento = 00.2
+    tiempo_rapido = 0
+    tarifa_rapido = 0.05
+    ultimo_tiempo = time.time()
+
+    print("Indique el estado del taxi:")
+    print("L - Lento: parado o velocidad inferior a 20km/h.")
+    print("R - Rápido: en movimiento a más de 20kmh/h).")
+    print("F - Finalizar carrera.")
+
+    while True:
+        tecla = input("Pulsa, L, R o F.").lower() #detallito
+
+        tiempo_actual = time.time()
+
+        segundos = tiempo_actual - ultimo_tiempo
+
+        if estado == "l":
+            tiempo_lento = tiempo_lento + segundos
+        elif estado == "r":
+            tiempo_rapido = tiempo_rapido + segundos
+
+        ultimo_tiempo = tiempo_actual
+
+        if tecla == "l":
+            estado = "l"
+            print("Vehículo parado o a menos de 20 km/h.")
+            print("Tarifa: 0,02 €/s")
+        elif tecla == "r":
+            estado = "r"
+            print("Vehículo en movimiento.")
+            print("Tarifa: 0,05 €/s")
+        elif tecla == "f":
+
+            importe_lento = tiempo_lento * tarifa_lento
+            importe_rapido = tiempo_rapido * tarifa_rapido
+            tarifa= importe_lento + importe_rapido
+            tiempo_total= tiempo_lento + tiempo_rapido
+
+            print("\nCARRERA FINALIZADA.") # ticket desglosado para el cliente
+            print("")
+            print("Resumen de la carrera")
+            print(f"Tiempo lento: {tiempo_lento:.0f} segundos.") #novedad teórica!
+            print(f"Tiempo rapido: {tiempo_rapido:.0f} segundos.")
+            print(f"Tiempo total: {tiempo_total:.0f} segundos.")
+            print("-----------------------------")
+            print(f"Importe lento: {importe_lento:.2f} €.")
+            print(f"Importe rápido: {importe_rapido:.2f} €.")
+            print("-----------------------------")
+            print(f"IMPORTE TOTAL: {tarifa:.2f} €")
+            print("Gracias por viajar en Taxi")
+            break
+        else:
+            print("Tecla incorrecta. Pulsa L, R o F.")
+
+    print("\nBuscando más pasaje@s...")
+    input("Pulse INTRO para iniciar una nueva carrera.")
