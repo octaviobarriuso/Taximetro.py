@@ -1,4 +1,3 @@
-
 # PROTOTIPO MEJORADO DE TAXIMETRO OBV
 # Octavio Barriuso
 
@@ -11,6 +10,11 @@
 
 
 import time #importante
+historico_carreras = []
+tiempo_carreras_total = 0
+tiempo_busqueda_total = 0
+ingresos_total = 0
+tarifa_busqueda = 0.01
 
 print("========================")
 print("BIENVENID@ AL TAXIMETRO")
