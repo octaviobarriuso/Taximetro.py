@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PROTOTIPO MEJORADO DE TAXIMETRO OBV
 # Octavio Barriuso
 
@@ -206,3 +207,213 @@ while True: #Bucle exterior para carreras sucesivas
         opcion = input("\nPulse INTRO para nueva carrera o H para consultar historico: ").lower()
 
     tiempo_busqueda_total = tiempo_busqueda_total + (time.time() - inicio_busqueda)
+=======
+# PROTOTIPO MEJORADO DE TAXIMETRO OBV
+# Octavio Barriuso
+
+# US-01-04: Gestion de carreras.
+    # Mejora_01_Para el taxista: se cobra tarifa lenta desde el inicio de la carrera.
+    # Mejora_02_Para el cliente: incluye un ticket detallado de su carrera.
+# US-05: Historico de carreras.
+    # Mejora_03_Para el responsable de flota: incluye control de tiempo de productividad y de jornada.
+    # Mejora_04_Para el responsable de flota: incluye balance económico ajustando el coste de búsqueda de clientes
+
+
+import time #importante
+historico_carreras = []
+tiempo_carreras_total = 0
+tiempo_busqueda_total = 0
+ingresos_total = 0
+tarifa_busqueda = 0.01
+
+print("========================")
+print("BIENVENID@ AL TAXIMETRO")
+print("========================")
+
+inicio = input("Para comenzar la carrera, pulse INTRO.")
+
+while inicio != "":
+    print("Debe pulsar INTRO para empezar la carrera.")
+    inicio = input("Pulse INTRO: ")
+
+
+while True: #Bucle exterior para carreras sucesivas
+
+    print("¡TAXIMETRO INICIADO!\nLa carrera ha comenzado.")
+
+    estado = "l" # Mejora 01: empieza a cobrar la tarifa lenta desde que se inicia.
+    tiempo_lento = 0
+    tarifa_lento = 0.02
+    tiempo_rapido = 0
+    tarifa_rapido = 0.05
+
+    ultimo_tiempo = time.time()
+
+    print("\nIndique el estado del taxi:")
+    print("L - Lento: parado o velocidad inferior a 20 km/h.")
+    print("R - Rapido: en movimiento a más de 20 km/h.")
+    print("F - Finalizar carrera.")
+
+
+    while True: #Bucle interior de cada carrera
+
+        tecla = input("Pulsa L, R o F: ").lower()
+
+        tiempo_actual = time.time()
+        segundos = tiempo_actual - ultimo_tiempo
+
+        if estado == "l":
+            tiempo_lento = tiempo_lento + segundos
+
+        elif estado == "r":
+            tiempo_rapido = tiempo_rapido + segundos
+
+        ultimo_tiempo = tiempo_actual
+
+        if tecla == "l":
+
+            estado = "l"
+            print("Vehículo parado o a menos de 20 km/h.")
+            print("Tarifa: 0,02 €/s")
+
+        elif tecla == "r":
+
+            estado = "r"
+            print("Vehículo en movimiento.")
+            print("Tarifa: 0,05 €/s")
+
+        elif tecla == "f":
+
+            importe_lento = tiempo_lento * tarifa_lento
+            importe_rapido = tiempo_rapido * tarifa_rapido
+
+            importe_total = importe_lento + importe_rapido
+            tiempo_total = tiempo_lento + tiempo_rapido
+
+            print("\nCARRERA FINALIZADA.")
+            print("")
+            print("Resumen de la carrera") # Mejora 02: ticket detallado
+            print(f"Tiempo lento: {tiempo_lento:.0f} segundos.")
+            print(f"Tiempo rapido: {tiempo_rapido:.0f} segundos.")
+            print(f"Tiempo total: {tiempo_total:.0f} segundos.")
+            print("-----------------------------")
+            print(f"Importe lento: {importe_lento:.2f} €.")
+            print(f"Importe rapido: {importe_rapido:.2f} €.")
+            print("-----------------------------")
+            print(f"IMPORTE TOTAL: {importe_total:.2f} €")
+            print("Gracias por viajar en Taxi")
+
+            carrera = {
+                "numero": len(historico_carreras) + 1,
+                "fecha": time.strftime("%d/%m/%Y"),
+                "hora": time.strftime("%H:%M:%S"),
+                "tiempo_lento": tiempo_lento,
+                "tiempo_rapido": tiempo_rapido,
+                "importe_lento": importe_lento,
+                "importe_rapido": importe_rapido,
+                "total": importe_total
+            }
+
+            historico_carreras.append(carrera)
+
+            tiempo_carreras_total = tiempo_carreras_total + tiempo_total
+            ingresos_total = ingresos_total + importe_total
+
+            break
+
+        else:
+
+            print("Tecla incorrecta. Pulse L, R o F.")
+
+    print("\nBuscando más pasajer@s...")
+
+    inicio_busqueda = time.time()
+
+    opcion = input("Pulse INTRO para nueva carrera o H para consultar el historico: ").lower()
+
+    while opcion == "h":
+
+        tiempo_actual = time.time()
+
+        tiempo_busqueda_total = tiempo_busqueda_total + (tiempo_actual - inicio_busqueda)
+
+        print("\nHISTÓRICO DE CARRERAS")
+        print("---------------------")
+
+        if len(historico_carreras) == 0:
+
+            print("No hay carreras registradas.")
+
+        else:
+
+            recaudacion_total = 0
+
+            for carrera in historico_carreras:
+
+                print("---------------------")
+                print("Carrera numero:", carrera["numero"])
+                print("Fecha:", carrera["fecha"])
+                print("Hora:", carrera["hora"])
+                print(f"Tiempo lento: {carrera['tiempo_lento']:.0f} segundos")
+                print(f"Tiempo rapido: {carrera['tiempo_rapido']:.0f} segundos")
+                print(f"Importe total: {carrera['total']:.2f} €")
+
+                recaudacion_total = recaudacion_total + carrera["total"]
+
+            print("---------------------")
+            print("Carreras realizadas:", len(historico_carreras))
+            print(f"RECAUDACIÓN TOTAL: {recaudacion_total:.2f} €")
+
+        tiempo_total_jornada = tiempo_carreras_total + tiempo_busqueda_total
+
+        if tiempo_total_jornada > 0: # Mejora 03 productividad del Taxi
+
+            porcentaje_carreras = (tiempo_carreras_total / tiempo_total_jornada) * 100
+            porcentaje_busqueda = (tiempo_busqueda_total / tiempo_total_jornada) * 100
+
+        else:
+
+            porcentaje_carreras = 0
+            porcentaje_busqueda = 0
+
+        # Mejora 04 balance económico descontando coste de busqueda
+        coste_busqueda = tiempo_busqueda_total * tarifa_busqueda 
+        balance_neto = ingresos_total - coste_busqueda
+
+        #Ticket de mejoras 03 y 04
+        print("\nPRODUCTIVIDAD DEL TAXI")
+        print("---------------------")
+
+        print(
+            f"Tiempo realizando carreras: "
+            f"{tiempo_carreras_total / 60:.1f} minutos "
+            f"({porcentaje_carreras:.1f} %)"
+        )
+
+        print(
+            f"Tiempo buscando clientes: "
+            f"{tiempo_busqueda_total / 60:.1f} minutos "
+            f"({porcentaje_busqueda:.1f} %)"
+        )
+
+        print("---------------------")
+        print(
+            f"Tiempo total registrado: "
+            f"{tiempo_total_jornada / 60:.1f} minutos"
+        )
+
+        print("\nBALANCE ECONÓMICO")
+        print("---------------------")
+
+        print(f"Ingresos por carreras: +{ingresos_total:.2f} €")
+        print(f"Coste de busqueda: -{coste_busqueda:.2f} €")
+
+        print("---------------------")
+        print(f"BALANCE NETO: {balance_neto:+.2f} €")
+
+        inicio_busqueda = time.time()
+
+        opcion = input("\nPulse INTRO para nueva carrera o H para consultar historico: ").lower()
+
+    tiempo_busqueda_total = tiempo_busqueda_total + (time.time() - inicio_busqueda)
+>>>>>>> 94f30ef74307b91f073fe51144db82889053b99d
